@@ -1,0 +1,28 @@
+userName:
+accessKey:
+projectName: Kotlin TestNG SDK
+buildName: browserstack build kotlin
+buildIdentifier: '#${BUILD_NUMBER}'
+framework: testng
+
+platforms:
+  - os: OS X
+    osVersion: Big Sur
+    browserName: Chrome
+    browserVersion: latest
+  - os: Windows
+    osVersion: 10
+    browserName: Edge
+    browserVersion: latest
+  - deviceName: Samsung Galaxy S22 Ultra
+    browserName: chrome
+    osVersion: 12.0
+
+
+parallelsPerPlatform: 1
+source: testng:sdk-archetype-integrate:v1.0
+browserstackLocal: true
+debug: false
+networkLogs: false
+consoleLogs: errors
+testObservability: true
