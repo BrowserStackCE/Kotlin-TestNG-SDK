@@ -1,7 +1,7 @@
 # KotlinTestNGSeleniumSDK
 This repository demonstrates how to run Selenium tests in Kotlin Testng on BrowserStack Automate using BrowserStack SDK.
 
-# kotlin-testng-browserstack
+# Kotlin-testng-browserstack
 
 [TestNG](http://testng.org) Integration with BrowserStack.
 
@@ -10,50 +10,11 @@ This repository demonstrates how to run Selenium tests in Kotlin Testng on Brows
 ## Using Maven
 ### Run sample build
 
-1. Clone the repository
-
-2. Set BrowserStack Credentials
-   Save your BrowserStack credentials as environment variables for easier access and improved security.
-
-macOS/Linux
-```sh
-export BROWSERSTACK_USERNAME="your_username"
-export BROWSERSTACK_ACCESS_KEY="your_access_key"
-```
-Windows PowerShell
-```sh
-$env:BROWSERSTACK_USERNAME="your_username"
-$env:BROWSERSTACK_ACCESS_KEY="your_access_key"
-```
-Windows CMD
-```sh
-set BROWSERSTACK_USERNAME=your_username
-set BROWSERSTACK_ACCESS_KEY=your_access_key
-```
-
-3. Install BrowserStack SDK using Maven Archetype
-   Use Maven Archetype to quickly scaffold SDK configuration in your project. It automatically adds browserstack-java-sdk in your pom.xml and creates a browserstack.yml config file.
-
-macOS or Linux:
-
-```sh
-mvn archetype:generate -B -DarchetypeGroupId=com.browserstack \
--DarchetypeArtifactId=browserstack-sdk-archetype-integrate -DarchetypeVersion=1.0 \
--DgroupId=com.browserstack -DartifactId=browserstack-sdk-archetype-integrate -Dversion=1.0 \
--DBROWSERSTACK_USERNAME=your_username -DBROWSERSTACK_ACCESS_KEY=your_access_key \
--DBROWSERSTACK_FRAMEWORK=testng
-```
-Windows:
-```sh
-mvn archetype:generate -B -DarchetypeGroupId=com.browserstack ^
--DarchetypeArtifactId=browserstack-sdk-archetype-integrate -DarchetypeVersion=1.0 ^
--DgroupId=com.browserstack -DartifactId=browserstack-sdk-archetype-integrate -Dversion=1.0 ^
--DBROWSERSTACK_USERNAME=your_username -DBROWSERSTACK_ACCESS_KEY=your_access_key ^
--DBROWSERSTACK_FRAMEWORK=testng
-```
-
+- Clone the repository
+- Replace YOUR_USERNAME and YOUR_ACCESS_KEY with your BrowserStack access credentials in browserstack.yml.
 - Install dependencies `mvn compile`
-- To run the test suite having cross-platform with parallelization, run `mvn clean test -DsuiteXmlFile=testng.xml`
+- To run the test suite having cross-platform with parallelization, run `mvn test -P sample-test`
+- To run local tests, run `mvn test -P sample-local-test`
 
 Understand how many parallel sessions you need by using our [Parallel Test Calculator](https://www.browserstack.com/automate/parallel-calculator?ref=github)
 
@@ -61,6 +22,7 @@ Understand how many parallel sessions you need by using our [Parallel Test Calcu
 
 This repository uses the BrowserStack SDK to run tests on BrowserStack. Follow the steps below to install the SDK in your test suite and run tests on BrowserStack:
 
+* Create sample browserstack.yml file with the browserstack related capabilities with your [BrowserStack Username and Access Key](https://www.browserstack.com/accounts/settings) and place it in your root folder.
 * Add maven dependency of browserstack-java-sdk in your pom.xml file
 ```sh
 <dependency>
@@ -70,7 +32,34 @@ This repository uses the BrowserStack SDK to run tests on BrowserStack. Follow t
     <scope>compile</scope>
 </dependency>
 ```
-
+* Modify your build plugin to run tests by adding argLine `-javaagent:${com.browserstack:browserstack-java-sdk:jar}` and `maven-dependency-plugin` for resolving dependencies in the profiles `sample-test` and `sample-local-test`.
+```
+            <plugin>
+               <artifactId>maven-dependency-plugin</artifactId>
+                 <executions>
+                   <execution>
+                     <id>getClasspathFilenames</id>
+                       <goals>
+                         <goal>properties</goal>
+                       </goals>
+                   </execution>
+                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>config/sample-local-test.testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <argLine>
+                        -javaagent:${com.browserstack:browserstack-java-sdk:jar}
+                    </argLine>
+                </configuration>
+            </plugin>
+```
+* Install dependencies `mvn compile`
 
 ## Notes
 * You can view your test results on the [BrowserStack Automate dashboard](https://www.browserstack.com/automate)
